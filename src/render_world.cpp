@@ -25,21 +25,20 @@ Render_World::~Render_World()
 // Any intersection with t<=small_t should be ignored.
 Object* Render_World::Closest_Intersection(const Ray& ray,Hit& hit)
 {
+
     double min_t = 999999999999999999999999999999999.0;
-    Object* temp;
     for(unsigned int i = 0; i < objects.size(); ++i) {
 	std::vector<Hit> tVals;
-	objects.at(i)->intersect(ray,tVals);
+	objects.at(i)->Intersection(ray,tVals);
         for(unsigned int j = 0; j < tVals.size(); ++j) {
 	    if(tVals.at(j).t < min_t) {
 		min_t = tVals.at(j).t;
-		temp = tVals.at(j).object;
 		hit = tVals.at(j);
 	    }
 
 	}
     }
-
+    
     return 0;
 }
 

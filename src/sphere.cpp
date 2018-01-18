@@ -6,7 +6,7 @@
 bool Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
     vec3 p = ray.endpoint - this->center;
-    double b = dot(2*vector.direction, p);
+    double b = dot(ray.direction*2, p);
     double c =  dot(p,p) - (this->radius * this->radius);
     double disc = (b * b) - (4 * c);
     if ( disc>0 ){
@@ -32,7 +32,7 @@ bool Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 				return true;
 			}
 	    
-    
+   } 
     return false;
 }
 
