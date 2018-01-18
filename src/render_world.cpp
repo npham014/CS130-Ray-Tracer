@@ -25,21 +25,23 @@ Render_World::~Render_World()
 // Any intersection with t<=small_t should be ignored.
 Object* Render_World::Closest_Intersection(const Ray& ray,Hit& hit)
 {
-
+    Object* closestObject = 0;
     double min_t = 999999999999999999999999999999999.0;
-    for(unsigned int i = 0; i < objects.size(); ++i) {
-	std::vector<Hit> tVals;
-	objects.at(i)->Intersection(ray,tVals);
-        for(unsigned int j = 0; j < tVals.size(); ++j) {
-	    if(tVals.at(j).t < min_t) {
-		min_t = tVals.at(j).t;
-		hit = tVals.at(j);
-	    }
+    for(unsigned int i = 0; i < objects.size(); ++i) { //Loop through all objects in the world
+	std::vector<Hit> tVals; //List of all hits for this object
+	if(objects.at(i)->Intersection(ray,tVals)) { //If there was a hit:
+            for(unsigned int j = 0; j < tVals.size(); ++j) { //Go through each hit
+	        if(tVals.at(j).t < min_t) {// If this was the closest hit:
+		    min_t = tVals.at(j).t;//Set this as the new val to be compared to
+		    hit = tVals.at(j);// Change the referenced hit to this hit
+		    closestObject = objects.at(i);//Set the current object to closest
+	        }
 
+	    }
 	}
     }
     
-    return 0;
+    return closestObject;
 }
 
 // set up the initial view ray and call
@@ -63,10 +65,18 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
-    // TODO
+    Hit temp;
+    Object* foundObject = Closest_Intersection(ray, temp);
+    
     vec3 color;
 
-    // determine the color here
-
+    if(foundObject) {
+	vec3 dummy;
+	color = foundObject->material_shader->Shade_Surface(ray,dummy,dummy,recursion_depth, temp.ray_exiting);
+    }
+    else {
+	vec3 dummy;
+	color = background_shader->Shade_Surface(ray, dummy, dummy, recursion_depth,false);
+    }
     return color;
 }
