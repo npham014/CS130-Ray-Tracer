@@ -9,7 +9,17 @@
 bool Plane::
 Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
-    // TODO
+    double top = dot(this->normal, (this->x1 - ray.endpoint));
+    double bot = dot(this->normal, ray.direction);
+    if(bot) {
+	double t1 = top/bot;
+	Hit firstHit;
+        firstHit.object = this;
+	firstHit.t=t1;
+	firstHit.ray_exiting = false;
+	hits.push_back(firstHit);
+	return true;
+    }
     return false;
 }
 
