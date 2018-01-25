@@ -71,8 +71,9 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     vec3 color;
 
     if(foundObject) {
-	vec3 dummy;
-	color = foundObject->material_shader->Shade_Surface(ray,dummy,dummy,recursion_depth, temp.ray_exiting);
+	vec3 intersection = ray.Point(temp);
+        vec3 normal = foundObject.Normal();
+	color = foundObject->material_shader->Shade_Surface(ray,intersection,normal,recursion_depth, temp.ray_exiting);
     }
     else {
 	vec3 dummy;
