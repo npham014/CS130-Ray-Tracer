@@ -11,14 +11,19 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
     double top = dot(this->normal, (this->x1 - ray.endpoint));
     double bot = dot(this->normal, ray.direction);
-    if(bot) {
+    if(bot) { //Check for a denominator of 0
 	double t1 = top/bot;
-	Hit firstHit;
-        firstHit.object = this;
-	firstHit.t=t1;
-	firstHit.ray_exiting = false;
-	hits.push_back(firstHit);
-	return true;
+	if(t1 > 0) { //If the Hit is in front of the ray
+		Hit firstHit;
+        	firstHit.object = this;
+		firstHit.t=t1;
+		firstHit.ray_exiting = false;
+		hits.push_back(firstHit);
+		return true;
+	}
+	else { //If the hit was behind the ray, or the ray starts in the plane;
+		return false;
+	}
     }
     return false;
 }
