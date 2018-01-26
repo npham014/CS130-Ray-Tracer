@@ -74,6 +74,16 @@ struct vec
     vec operator / (const T& c) const
     {vec r; for(int i = 0; i < n; i++) r[i] = x[i] / c; return r;}
 
+    bool operator ==(const vec&v) const {
+	for(int i = 0; i < n; i++) {
+		if(x[i] != v.x[i]) {
+			return false;
+		}
+	}
+
+        return true;
+    }
+
     const T& operator[] (int i) const
     {return x[i];}
 

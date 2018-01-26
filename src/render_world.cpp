@@ -71,8 +71,8 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     vec3 color;
 
     if(foundObject) {
-	vec3 intersection = ray.Point(temp);
-        vec3 normal = foundObject.Normal(intersection);
+	vec3 intersection = ray.Point(temp.t);
+        vec3 normal = foundObject->Normal(intersection);
 	if(temp.ray_exiting) {
 		normal *= -1;
 	}
