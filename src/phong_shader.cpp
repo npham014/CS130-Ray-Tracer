@@ -20,7 +20,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 
    
     for(unsigned int i = 0; i < world.lights.size(); ++i) {//Loop through lights
-	lightRay.direction = world.lights.at(i)->position - intersection_point;
+	lightRay.direction =intersection_point - world.lights.at(i)->position; //12:40 Switched these 2 variables. 
 	lightRay.endpoint = world.lights.at(i)->position;
 	if(world.enable_shadows) {
 		Hit passToShadow;
