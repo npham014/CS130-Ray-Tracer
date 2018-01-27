@@ -26,15 +26,19 @@ Render_World::~Render_World()
 Object* Render_World::Closest_Intersection(const Ray& ray,Hit& hit)
 {
     Object* closestObject = 0;
-    double min_t = 999999999999999999999999999999999.0;
+    double min_t = 999999999999999999999999999999999999999999999.0;
     for(unsigned int i = 0; i < objects.size(); ++i) { //Loop through all objects in the world
 	std::vector<Hit> tVals; //List of all hits for this object
 	if(objects.at(i)->Intersection(ray,tVals)) { //If there was a hit:
             for(unsigned int j = 0; j < tVals.size(); ++j) { //Go through each hit
 	        if(tVals.at(j).t < min_t) {// If this was the closest hit:
+		    if(tVals.at(j).t <= small_t) {
+			continue;
+		    }
 		    min_t = tVals.at(j).t;//Set this as the new val to be compared to
 		    hit = tVals.at(j);// Change the referenced hit to this hit
 		    closestObject = objects.at(i);//Set the current object to closest
+		    
 	        }
 
 	    }
