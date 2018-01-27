@@ -76,6 +76,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 	if(temp.ray_exiting) {
 		normal *= -1;
 	}
+	normal = normal.normalized();
 	color = foundObject->material_shader->Shade_Surface(ray,intersection,normal,recursion_depth, temp.ray_exiting);
     }
     else {

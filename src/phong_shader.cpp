@@ -20,29 +20,34 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 
    
     for(unsigned int i = 0; i < world.lights.size(); ++i) {//Loop through lights
-	lightRay.direction = intersection_point - world.lights.at(i)->position;
-	lightRay.direction = lightRay.direction.normalized();
-	lightRay.endpoint = world.lights.at(i)->position;
-	if(world.enable_shadows) {
+	lightRay.direction = world.lights.at(i)->position - intersection_point;//Calculate Direction
+	double sqrdLight = lightRay.direction.magnitude_squared();
+	lightRay.direction = lightRay.direction.normalized();//Normalize
+	lightRay.endpoint = world.lights.at(i)->position;//Get the position
+	if(world.enable_shadows) {//Check if shadows are on
 		Hit passToShadow;
-		world.Closest_Intersection(lightRay, passToShadow);
-		vec3 zeroVec(0,0,0);
-		//If the intersection isn't the same as the closest point to the light
-		if(cross(intersection_point , lightRay.Point(passToShadow.t)) == zeroVec ) { 
-			return color;//Return ambient light only
-		}	
+		Ray intToLight;
+		intToLight.endpoint = intersection_point;
+		intToLight.direction = lightRay.direction;
+		if(world.Closest_Intersection(lightRay, passToShadow)){
+			if(passToShadow.t < sqrt(sqrdLight)) {
+				continue;
+			}
+		}
 	}
 	//Calculate Diffuse and Add to color
 	lightColor = world.lights.at(i)->Emitted_Light(lightRay);
-	double temp = std::max(dot(lightRay.direction.normalized(), same_side_normal) , 0.0);
-	color += lightColor * color_diffuse * temp;
-
+	lightColor /= sqrdLight;
+	double temp = std::max(dot(lightRay.direction, same_side_normal) , 0.0);
+	color += (lightColor * color_diffuse * temp);
+	
        //Calculate Specular and Add to color
-       vec3 reflectDirection = (2 * dot(lightRay.direction.normalized(), same_side_normal) * (same_side_normal - lightRay.direction.normalized()));
-       double specInt = std::max(dot(reflectDirection,ray.direction.normalized()), 0.0);
+       vec3 reflectDirection = (2 * dot(lightRay.direction, same_side_normal) * same_side_normal) - lightRay.direction;
+       vec3 oppRayDir = ray.direction.normalized() * -1;
+       double specInt = std::max(dot(reflectDirection,oppRayDir), 0.0);
        specInt = pow(specInt, specular_power);
        color += (lightColor * color_specular * specInt);
-
+	
     }
  
     
