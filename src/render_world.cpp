@@ -69,11 +69,19 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
+   vec3 color;
+
+   
+   if(recursion_depth > recursion_depth_limit) {
+	vec3 dummy;
+	color = background_shader->Shade_Surface(ray, dummy, dummy, recursion_depth, false);
+	return color;
+    }
+
     Hit temp;
     Object* foundObject = Closest_Intersection(ray, temp);
     
-    vec3 color;
-
+   
     if(foundObject) {
 	vec3 intersection = ray.Point(temp.t);
         vec3 normal = foundObject->Normal(intersection);
