@@ -35,7 +35,7 @@ Shade_Surface(const Ray& ray, const vec3& intersection_point,
 	}
 	
 	double x = pow( (ni/nr), 2);
-	double cosi = dot(same_side_normal, ray.direction);
+	double cosi = dot(same_side_normal,ray.direction * -1);
 	double cosrsqr = 1 - x * (1 - pow(cosi, 2));
 	if(cosrsqr < 0) { //check for total internal reflection
 		reflectance_ratio = 1;
@@ -43,7 +43,7 @@ Shade_Surface(const Ray& ray, const vec3& intersection_point,
 	else {
 		double cosr = sqrt(cosrsqr);
 		vec3 r = ray.direction - (dot(ray.direction, same_side_normal) * same_side_normal);
-		vec3 T = (ni/nr) * (r - cosr * same_side_normal);
+		vec3 T = ((ni/nr) * r) - (cosr * same_side_normal);
 		Ray refract_ray;
 		refract_ray.endpoint = intersection_point;
 		refract_ray.direction = T.normalized();
