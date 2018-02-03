@@ -48,6 +48,12 @@ Shade_Surface(const Ray& ray, const vec3& intersection_point,
 		refract_ray.endpoint = intersection_point;
 		refract_ray.direction = T.normalized();
 		refraction_color = world.Cast_Ray(refract_ray, recursion_depth + 1);
+		//I think test 28+ goes here?
+		double r_parallel = (nr * cosi - ni * cosr) / (nr * cosi + ni * cosr);
+		r_parallel = pow(r_parallel, 2);
+		double r_perp = (ni * cosi - nr * cosr) / (ni * cosi + nr * cosr);
+		r_perp = pow(r_perp, 2);
+		reflectance_ratio = (r_perp + r_parallel) / 2;
 	}
 		
     }
@@ -60,8 +66,7 @@ Shade_Surface(const Ray& ray, const vec3& intersection_point,
 	reflect_ray.direction = r;
 	
 	reflection_color = world.Cast_Ray(reflect_ray, recursion_depth + 1);
-	//this might be wrong; This might have needed to be the full calculation from reflect_shader
-	//edit: test 26 seems to work so this might be right
+
     }
 
     Enforce_Refractance_Ratio(reflectance_ratio);
